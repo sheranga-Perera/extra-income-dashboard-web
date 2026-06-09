@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { loginUser, registerUser, type RegisterPayload } from '../api/auth';
 import { setAuthToken } from '../api/http';
 
@@ -21,15 +21,15 @@ const STORAGE_KEY = 'auth_token';
 const USERNAME_KEY = 'admin_username';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem(STORAGE_KEY));
+  const [token, setToken] = useState<string | null>(() => {
+    const storedToken = localStorage.getItem(STORAGE_KEY);
+    setAuthToken(storedToken);
+    return storedToken;
+  });
   const [user, setUser] = useState<UserSummary | null>(() => {
     const storedUsername = localStorage.getItem(USERNAME_KEY);
     return token && storedUsername ? { username: storedUsername, role: 'ADMIN' } : null;
   });
-
-  useEffect(() => {
-    setAuthToken(token);
-  }, [token]);
 
   const login = useCallback(async (username: string, password: string) => {
     const newToken = await loginUser(username, password);

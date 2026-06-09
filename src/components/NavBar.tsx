@@ -15,7 +15,9 @@ export default function NavBar() {
           </>
         ) : (
           <>
-            <Link to="/">Ads Admin</Link>
+            <Link to="/">Ads</Link>
+            <Link to="/admins">Admins</Link>
+            <Link to="/config">Config</Link>
             <button className="button" type="button" onClick={logout}>
               Logout
             </button>

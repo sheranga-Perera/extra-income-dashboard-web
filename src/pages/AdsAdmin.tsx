@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { approveAdRequest, listAdRequests, rejectAdRequest, type AdRequestResponse } from '../api/ads';
+import {
+  approveAdRequest,
+  fetchAdSummary,
+  listAdRequests,
+  rejectAdRequest,
+  type AdRequestResponse,
+  type AdSummaryResponse
+} from '../api/ads';
 import { useAuth } from '../context/AuthContext';
 
 interface ApprovalDraft {
@@ -18,6 +25,7 @@ export default function AdsAdmin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<AdSummaryResponse | null>(null);
 
   const isAdmin = user?.role === 'ADMIN';
 
@@ -27,9 +35,13 @@ export default function AdsAdmin() {
     }
     setLoading(true);
     setError(null);
-    listAdRequests(nextStatus === 'ALL' ? undefined : nextStatus)
-      .then((data) => {
+    Promise.all([
+      listAdRequests(nextStatus === 'ALL' ? undefined : nextStatus),
+      fetchAdSummary()
+    ])
+      .then(([data, nextSummary]) => {
         setRequests(data);
+        setSummary(nextSummary);
         const nextDrafts: Record<string, ApprovalDraft> = {};
         data.forEach((item) => {
           nextDrafts[item.id] = {
@@ -121,6 +133,25 @@ export default function AdsAdmin() {
         </div>
         <div className="jobs-summary">
           {loading ? 'Loading requests...' : `${requests.length} requests`}
+        </div>
+      </div>
+
+      <div className="dashboard-cards">
+        <div className="metric-card">
+          <span className="metric-card__label">Pending</span>
+          <strong>{summary?.pending ?? 0}</strong>
+        </div>
+        <div className="metric-card">
+          <span className="metric-card__label">Approved</span>
+          <strong>{summary?.approved ?? 0}</strong>
+        </div>
+        <div className="metric-card">
+          <span className="metric-card__label">Active now</span>
+          <strong>{summary?.active ?? 0}</strong>
+        </div>
+        <div className="metric-card">
+          <span className="metric-card__label">Rejected</span>
+          <strong>{summary?.rejected ?? 0}</strong>
         </div>
       </div>
 

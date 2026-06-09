@@ -42,6 +42,13 @@ export interface AdRequestResponse extends AdRequestPayload {
   rejectedAt?: string | null;
 }
 
+export interface AdSummaryResponse {
+  pending: number;
+  approved: number;
+  rejected: number;
+  active: number;
+}
+
 export async function fetchActiveAds(): Promise<ActiveAdResponse[]> {
   return apiRequest('/ads/active');
 }
@@ -56,6 +63,10 @@ export async function createAdRequest(payload: AdRequestPayload): Promise<AdRequ
 export async function listAdRequests(status?: string): Promise<AdRequestResponse[]> {
   const suffix = status ? `?status=${encodeURIComponent(status)}` : '';
   return apiRequest(`/ads/requests${suffix}`);
+}
+
+export async function fetchAdSummary(): Promise<AdSummaryResponse> {
+  return apiRequest('/ads/summary');
 }
 
 export async function approveAdRequest(id: string, payload?: { startDate?: string; endDate?: string }) {

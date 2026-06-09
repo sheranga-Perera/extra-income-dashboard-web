@@ -3,6 +3,8 @@ import NavBar from './components/NavBar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdsAdmin from './pages/AdsAdmin';
+import AdminUsers from './pages/AdminUsers';
+import DashboardConfig from './pages/DashboardConfig';
 
 const router = createBrowserRouter(
   [
@@ -27,6 +29,26 @@ const router = createBrowserRouter(
       )
     },
     {
+      path: '/admins',
+      element: (
+        <div className="app-shell">
+          <NavBar />
+          <AdminUsers />
+          <footer className="footer">Extra Income Dashboard</footer>
+        </div>
+      )
+    },
+    {
+      path: '/config',
+      element: (
+        <div className="app-shell">
+          <NavBar />
+          <DashboardConfig />
+          <footer className="footer">Extra Income Dashboard</footer>
+        </div>
+      )
+    },
+    {
       path: '/register',
       element: (
         <div className="app-shell">
@@ -36,13 +58,7 @@ const router = createBrowserRouter(
         </div>
       )
     }
-  ],
-  {
-    future: {
-      v7_startTransition: true,
-      v7_relativeSplatPath: true
-    }
-  }
+  ]
 );
 
 export default function App() {

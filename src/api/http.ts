@@ -53,5 +53,10 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     throw new Error(message || statusLabel || 'Request failed');
   }
 
-  return response.json() as Promise<T>;
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const text = await response.text();
+  return (text ? JSON.parse(text) : undefined) as T;
 }
