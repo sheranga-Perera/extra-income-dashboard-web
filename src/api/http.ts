@@ -1,4 +1,5 @@
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL as string;
+const DEFAULT_API_BASE_URL = 'http://localhost:8081/ei-dashboard';
+const rawBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? DEFAULT_API_BASE_URL;
 const BASE_URL = rawBaseUrl?.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 const USE_CREDENTIALS = import.meta.env.VITE_API_USE_CREDENTIALS === 'true';
 
@@ -22,9 +23,6 @@ function hasAuthorizationHeader(headers: HeadersInit | undefined): boolean {
 }
 
 export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
-  if (!BASE_URL) {
-    throw new Error('VITE_API_BASE_URL is not set');
-  }
   const headers = new Headers(options.headers ?? {});
   if (!headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
