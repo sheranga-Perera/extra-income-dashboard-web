@@ -11,7 +11,11 @@ export default function NavBar() {
         {!user ? (
           <>
             <Link to="/login">Login</Link>
-            <Link to="/register" className="button button--ghost">Create Admin</Link>
+            {/*
+            <Link to="/register" className="button button--ghost">
+                Create Admin
+            </Link>
+            */}
           </>
         ) : (
           <>
