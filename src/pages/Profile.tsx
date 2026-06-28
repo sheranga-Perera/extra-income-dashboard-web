@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProfile, saveProfile } from '../api/profile';
+import { COMPANY_SECTORS } from '../constants/companySectors';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../context/I18nContext';
 
@@ -354,10 +355,15 @@ export default function Profile() {
           </div>
           <div className="field">
             <label>Company sector</label>
-            <input
+            <select
               value={company.sector}
               onChange={(e) => setCompany((prev) => ({ ...prev, sector: e.target.value }))}
-            />
+            >
+              <option value="">Select sector</option>
+              {COMPANY_SECTORS.map((sector) => (
+                <option key={sector} value={sector}>{sector}</option>
+              ))}
+            </select>
           </div>
           <div className="field">
             <label>Legal documents</label>

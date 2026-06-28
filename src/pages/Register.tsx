@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PasswordInput from '../components/PasswordInput';
 import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
@@ -80,9 +81,8 @@ export default function Register() {
         </div>
         <div className="field">
           <label htmlFor="password">Password</label>
-          <input
+          <PasswordInput
             id="password"
-            type="password"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -94,9 +94,8 @@ export default function Register() {
         </div>
         <div className="field">
           <label htmlFor="confirmPassword">Confirm password</label>
-          <input
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             value={confirmPassword}
             onChange={(e) => {
               setConfirmPassword(e.target.value);
