@@ -137,6 +137,35 @@ a {
   font-size: 1rem;
 }
 
+.password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field .password-input__control {
+  width: 100%;
+  padding-right: 4.5rem;
+}
+
+.password-input__toggle {
+  position: absolute;
+  right: 0.35rem;
+  min-width: 3.5rem;
+  height: calc(100% - 0.7rem);
+  border: none;
+  border-radius: 0.5rem;
+  background: #e2e8f0;
+  color: #0f172a;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.password-input__toggle:hover,
+.password-input__toggle:focus-visible {
+  background: #cbd5e1;
+}
+
 .phone-input {
   display: flex;
   gap: 0.5rem;

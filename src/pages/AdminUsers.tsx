@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createAdmin, deleteAdmin, listAdmins, type AdminUserResponse } from '../api/admins';
+import PasswordInput from '../components/PasswordInput';
 import { useAuth } from '../context/AuthContext';
 
 export default function AdminUsers() {
@@ -103,9 +104,8 @@ export default function AdminUsers() {
           </div>
           <div className="field">
             <label htmlFor="adminPassword">Password</label>
-            <input
+            <PasswordInput
               id="adminPassword"
-              type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />

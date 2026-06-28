@@ -1,0 +1,23 @@
+export const COMPANY_SECTORS = [
+  'Agriculture',
+  'Automotive',
+  'Banking and finance',
+  'Construction',
+  'Education',
+  'Food and beverage',
+  'Government',
+  'Healthcare',
+  'Hospitality',
+  'Information technology',
+  'Logistics and transport',
+  'Manufacturing',
+  'Media and entertainment',
+  'Non-profit',
+  'Professional services',
+  'Real estate',
+  'Retail',
+  'Security',
+  'Telecommunications',
+  'Tourism',
+  'Other'
+];
