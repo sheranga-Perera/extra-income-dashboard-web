@@ -4,9 +4,14 @@ const BASE_URL = rawBaseUrl?.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUr
 const USE_CREDENTIALS = import.meta.env.VITE_API_USE_CREDENTIALS === 'true';
 
 let authToken: string | null = null;
+let unauthorizedHandler: (() => void) | null = null;
 
 export function setAuthToken(token: string | null) {
   authToken = token;
+}
+
+export function setUnauthorizedHandler(handler: (() => void) | null) {
+  unauthorizedHandler = handler;
 }
 
 function hasAuthorizationHeader(headers: HeadersInit | undefined): boolean {
@@ -46,6 +51,10 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
       }
     } catch {
       // ignore JSON parse errors
+    }
+    if (response.status === 401 && !path.startsWith('/auth/')) {
+      setAuthToken(null);
+      unauthorizedHandler?.();
     }
     const statusLabel = `${response.status} ${response.statusText}`.trim();
     throw new Error(message || statusLabel || 'Request failed');

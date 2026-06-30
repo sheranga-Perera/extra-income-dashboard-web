@@ -9,6 +9,7 @@ export interface ActiveAdResponse {
   mediaUrl: string | null;
   mediaContent?: string | null;
   cta: string | null;
+  ctaUrl?: string | null;
   viewsPerDay: number | null;
   minutesPerDay: number | null;
   startDate: string | null;
@@ -28,6 +29,7 @@ export interface AdRequestPayload {
   mediaContent?: string;
   mediaNotes?: string;
   cta?: string;
+  ctaUrl?: string;
   viewsPerDay?: number;
   minutesPerDay?: number;
   startDate?: string;
@@ -46,6 +48,7 @@ export interface AdSummaryResponse {
   pending: number;
   approved: number;
   rejected: number;
+  discontinued: number;
   active: number;
 }
 
@@ -78,6 +81,12 @@ export async function approveAdRequest(id: string, payload?: { startDate?: strin
 
 export async function rejectAdRequest(id: string) {
   return apiRequest<AdRequestResponse>(`/ads/requests/${id}/reject`, {
+    method: 'PATCH'
+  });
+}
+
+export async function discontinueAdRequest(id: string) {
+  return apiRequest<AdRequestResponse>(`/ads/requests/${id}/discontinue`, {
     method: 'PATCH'
   });
 }

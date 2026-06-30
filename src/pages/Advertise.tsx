@@ -24,6 +24,7 @@ interface AdFormState {
   mediaUrl: string;
   mediaNotes: string;
   cta: string;
+  ctaUrl: string;
   viewsPerDay: string;
   minutesPerDay: string;
   startDate: string;
@@ -42,6 +43,7 @@ const initialForm: AdFormState = {
   mediaUrl: '',
   mediaNotes: '',
   cta: '',
+  ctaUrl: '',
   viewsPerDay: '',
   minutesPerDay: '',
   startDate: '',
@@ -64,6 +66,7 @@ const buildMessage = (form: AdFormState, requestId?: string, mediaFileName?: str
     mediaFileName ? `Media file uploaded: ${mediaFileName}` : null,
     form.mediaNotes ? `Media notes: ${form.mediaNotes}` : null,
     form.cta ? `CTA: ${form.cta}` : null,
+    form.ctaUrl ? `CTA URL: ${form.ctaUrl}` : null,
     form.viewsPerDay ? `Views per day: ${form.viewsPerDay}` : null,
     form.minutesPerDay ? `Minutes per day: ${form.minutesPerDay}` : null,
     form.startDate ? `Start date: ${form.startDate}` : null,
@@ -141,6 +144,7 @@ export default function Advertise() {
         mediaContent,
         mediaNotes: form.mediaNotes.trim() || undefined,
         cta: form.cta.trim() || undefined,
+        ctaUrl: form.ctaUrl.trim() || undefined,
         viewsPerDay: Number.isFinite(viewsPerDay) ? viewsPerDay : undefined,
         minutesPerDay: Number.isFinite(minutesPerDay) ? minutesPerDay : undefined,
         startDate: form.startDate,
@@ -282,6 +286,16 @@ export default function Advertise() {
               value={form.cta}
               onChange={(event) => setForm((prev) => ({ ...prev, cta: event.target.value }))}
               placeholder="Apply now, Learn more"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="adCtaUrl">Call to action link</label>
+            <input
+              id="adCtaUrl"
+              type="url"
+              value={form.ctaUrl}
+              onChange={(event) => setForm((prev) => ({ ...prev, ctaUrl: event.target.value }))}
+              placeholder="https://example.com/apply"
             />
           </div>
           <div className="field">

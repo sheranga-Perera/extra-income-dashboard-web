@@ -61,6 +61,11 @@ a {
   color: #0f172a;
 }
 
+.button--danger {
+  background: #991b1b;
+  color: #fff;
+}
+
 .container {
   width: min(100%, 1100px);
   margin: 0 auto;
@@ -135,6 +140,34 @@ a {
   border-radius: 0.75rem;
   border: 1px solid #cbd5f5;
   font-size: 1rem;
+}
+
+.field input[type="file"] {
+  padding: 0.45rem;
+  background: #fff;
+}
+
+.field input[type="file"]::file-selector-button {
+  margin-right: 0.75rem;
+  border: none;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.readonly-field {
+  min-height: 2.55rem;
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 600;
 }
 
 .password-input {
@@ -468,15 +501,35 @@ a {
 
 .ad-media {
   background: #f1f5f9;
-  display: block;
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  position: relative;
 }
 
 .ad-media img,
 .ad-media video {
   display: block;
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  max-height: 220px;
+  object-fit: contain;
+}
+
+.ad-media__fallback {
+  display: none;
+  padding: 1rem;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.ad-media--empty img,
+.ad-media--empty video {
+  display: none;
+}
+
+.ad-media--empty .ad-media__fallback {
+  display: block;
 }
 
 .ad-body {
@@ -526,6 +579,13 @@ a {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+.admin-actions__note {
+  align-self: center;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .footer {
