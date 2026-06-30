@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   approveAdRequest,
+  discontinueAdRequest,
   fetchAdSummary,
   listAdRequests,
   rejectAdRequest,
@@ -10,18 +11,12 @@ import {
 } from '../api/ads';
 import { useAuth } from '../context/AuthContext';
 
-interface ApprovalDraft {
-  startDate: string;
-  endDate: string;
-}
-
-const statusOptions = ['PENDING', 'APPROVED', 'REJECTED', 'ALL'] as const;
+const statusOptions = ['PENDING', 'APPROVED', 'REJECTED', 'DISCONTINUED', 'ALL'] as const;
 
 export default function AdsAdmin() {
   const { user } = useAuth();
   const [status, setStatus] = useState<(typeof statusOptions)[number]>('PENDING');
   const [requests, setRequests] = useState<AdRequestResponse[]>([]);
-  const [drafts, setDrafts] = useState<Record<string, ApprovalDraft>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -42,14 +37,6 @@ export default function AdsAdmin() {
       .then(([data, nextSummary]) => {
         setRequests(data);
         setSummary(nextSummary);
-        const nextDrafts: Record<string, ApprovalDraft> = {};
-        data.forEach((item) => {
-          nextDrafts[item.id] = {
-            startDate: item.startDate ?? '',
-            endDate: item.endDate ?? ''
-          };
-        });
-        setDrafts(nextDrafts);
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load requests.'))
       .finally(() => setLoading(false));
@@ -63,24 +50,10 @@ export default function AdsAdmin() {
     loadRequests(status);
   }, [isAdmin, status]);
 
-  const updateDraft = (id: string, field: keyof ApprovalDraft, value: string) => {
-    setDrafts((prev) => ({
-      ...prev,
-      [id]: {
-        ...(prev[id] ?? { startDate: '', endDate: '' }),
-        [field]: value
-      }
-    }));
-  };
-
   const handleApprove = async (id: string) => {
     setActionError(null);
-    const draft = drafts[id];
     try {
-      await approveAdRequest(id, {
-        startDate: draft?.startDate || undefined,
-        endDate: draft?.endDate || undefined
-      });
+      await approveAdRequest(id);
       loadRequests(status);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Failed to approve request.');
@@ -94,6 +67,16 @@ export default function AdsAdmin() {
       loadRequests(status);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Failed to reject request.');
+    }
+  };
+
+  const handleDiscontinue = async (id: string) => {
+    setActionError(null);
+    try {
+      await discontinueAdRequest(id);
+      loadRequests(status);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Failed to discontinue advertisement.');
     }
   };
 
@@ -152,6 +135,10 @@ export default function AdsAdmin() {
         <div className="metric-card">
           <span className="metric-card__label">Rejected</span>
           <strong>{summary?.rejected ?? 0}</strong>
+        </div>
+        <div className="metric-card">
+          <span className="metric-card__label">Discontinued</span>
+          <strong>{summary?.discontinued ?? 0}</strong>
         </div>
       </div>
 
@@ -213,30 +200,38 @@ export default function AdsAdmin() {
               {request.mediaContent && <span className="job-tag">Media file uploaded</span>}
             </div>
             <div className="admin-actions">
-              <div className="field">
-                <label>Start date</label>
-                <input
-                  type="date"
-                  value={drafts[request.id]?.startDate ?? ''}
-                  onChange={(event) => updateDraft(request.id, 'startDate', event.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label>End date</label>
-                <input
-                  type="date"
-                  value={drafts[request.id]?.endDate ?? ''}
-                  onChange={(event) => updateDraft(request.id, 'endDate', event.target.value)}
-                />
-              </div>
-              <div className="admin-actions__buttons">
-                <button className="button" type="button" onClick={() => handleApprove(request.id)}>
-                  Approve
-                </button>
-                <button className="button button--ghost" type="button" onClick={() => handleReject(request.id)}>
-                  Reject
-                </button>
-              </div>
+              {request.status === 'PENDING' && (
+                <>
+                  <div className="field">
+                    <label>Start date</label>
+                    <div className="readonly-field">{request.startDate ?? 'Not set'}</div>
+                  </div>
+                  <div className="field">
+                    <label>End date</label>
+                    <div className="readonly-field">{request.endDate ?? 'Not set'}</div>
+                  </div>
+                  <div className="admin-actions__buttons">
+                    <button className="button" type="button" onClick={() => handleApprove(request.id)}>
+                      Approve
+                    </button>
+                    <button className="button button--ghost" type="button" onClick={() => handleReject(request.id)}>
+                      Reject
+                    </button>
+                  </div>
+                </>
+              )}
+              {request.status === 'APPROVED' && (
+                <div className="admin-actions__buttons">
+                  <button className="button button--danger" type="button" onClick={() => handleDiscontinue(request.id)}>
+                    Discontinue advertisement
+                  </button>
+                </div>
+              )}
+              {(request.status === 'REJECTED' || request.status === 'DISCONTINUED') && (
+                <div className="admin-actions__note">
+                  No actions available for {request.status.toLowerCase()} advertisements.
+                </div>
+              )}
             </div>
           </article>
         ))}
